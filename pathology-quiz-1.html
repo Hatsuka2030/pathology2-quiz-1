@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病理学 第2章 試験問題（全80問）</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--border:#30363d;--accent:#a78bfa;--accent2:#818cf8;--accent-dim:rgba(167,139,250,0.12);--text:#e6edf3;--text2:#8b949e;--text3:#6e7681;--red:#f87171;--orange:#fb923c;--yellow:#fbbf24;--green:#4ade80;--correct-bg:rgba(74,222,128,0.1);--wrong-bg:rgba(248,113,113,0.1);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;}
+#app{display:grid;grid-template-columns:1fr 300px;min-height:100vh;gap:0;}
+#main-panel{padding:28px 32px;border-right:1px solid var(--border);overflow-y:auto;max-height:100vh;}
+#wrong-panel{background:var(--bg2);padding:20px 16px;overflow-y:auto;max-height:100vh;position:sticky;top:0;}
+.app-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:20px;}
+.app-title span{color:var(--accent);}
+#progress-wrap{margin-bottom:20px;}
+.progress-label{font-size:12px;color:var(--text3);margin-bottom:6px;display:flex;justify-content:space-between;}
+.progress-bar-bg{background:var(--bg3);border-radius:4px;height:6px;overflow:hidden;}
+.progress-bar-fill{height:6px;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:4px;transition:width 0.4s ease;}
+#nav-bar{display:flex;align-items:center;gap:10px;margin-bottom:22px;flex-wrap:wrap;}
+.nav-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-size:13px;transition:all 0.15s;}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent);}
+.nav-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.nav-btn.primary{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
+#jump-input{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:6px;width:60px;font-size:13px;text-align:center;font-family:'Noto Sans JP',sans-serif;}
+#jump-input:focus{outline:none;border-color:var(--accent);}
+.nav-sep{color:var(--border);margin:0 4px;}
+.action-btn{padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-family:'Noto Sans JP',sans-serif;border:1px solid;transition:all 0.15s;}
+.btn-reset{background:rgba(248,113,113,0.1);border-color:var(--red);color:var(--red);}
+.btn-reset:hover{background:rgba(248,113,113,0.2);}
+.btn-restart{background:rgba(129,140,248,0.1);border-color:var(--accent2);color:var(--accent2);}
+.btn-restart:hover{background:rgba(129,140,248,0.2);}
+.mode-badge{font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:20px;font-weight:600;}
+.mode-quiz{background:rgba(167,139,250,0.15);color:var(--accent);}
+.mode-review{background:rgba(251,191,36,0.15);color:var(--yellow);}
+#question-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:18px;}
+.q-meta{display:flex;gap:10px;align-items:center;margin-bottom:14px;}
+.q-num{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--accent);}
+.q-tag{font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(167,139,250,0.1);color:var(--accent);letter-spacing:1px;}
+.q-text{font-size:15px;color:var(--text);line-height:1.8;}
+.q-hint{font-size:12px;color:var(--yellow);margin-top:10px;}
+#options-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.opt{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;cursor:pointer;transition:all 0.15s;display:flex;align-items:flex-start;gap:12px;font-size:14px;}
+.opt:hover:not(.disabled){border-color:var(--accent);background:var(--accent-dim);}
+.opt.selected{border-color:var(--accent2);background:rgba(129,140,248,0.12);}
+.opt.correct{border-color:var(--green)!important;background:var(--correct-bg)!important;}
+.opt.wrong{border-color:var(--red)!important;background:var(--wrong-bg)!important;}
+.opt.disabled{cursor:not-allowed;}
+.opt-label{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--text3);min-width:22px;}
+.opt.selected .opt-label{color:var(--accent2);}
+.opt.correct .opt-label{color:var(--green);}
+.opt.wrong .opt-label{color:var(--red);}
+.opt-text{flex:1;}
+#submit-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;border-radius:10px;color:#fff;font-family:'Noto Sans JP',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:opacity 0.15s;margin-bottom:14px;}
+#submit-btn:hover{opacity:0.88;}
+#submit-btn:disabled{opacity:0.3;cursor:not-allowed;}
+#result-box{border-radius:10px;padding:14px 18px;font-size:14px;margin-bottom:14px;display:none;}
+#result-box.show{display:block;}
+#result-box.correct{background:var(--correct-bg);border:1px solid var(--green);color:var(--green);}
+#result-box.wrong{background:var(--wrong-bg);border:1px solid var(--red);color:var(--red);}
+.result-title{font-weight:700;font-size:16px;margin-bottom:4px;}
+.result-answer{font-size:13px;color:var(--text2);margin-top:6px;}
+#explanation-box{border-radius:10px;padding:18px 20px;font-size:13px;margin-bottom:14px;display:none;background:var(--bg3);border:1px solid var(--border);line-height:1.9;}
+#explanation-box.show{display:block;}
+.exp-answer{font-weight:700;color:var(--accent);font-size:14px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.exp-section{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;margin-top:10px;}
+.exp-body{color:var(--text2);margin-bottom:6px;}
+.exp-why{color:var(--text2);padding:10px 14px;background:var(--bg2);border-radius:8px;border-left:3px solid var(--accent2);margin-top:8px;}
+.exp-why strong,.exp-body strong{color:var(--text);}
+#completion-screen{display:none;text-align:center;padding:60px 20px;}
+#completion-screen.show{display:block;}
+.comp-icon{font-size:60px;margin-bottom:20px;}
+.comp-title{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--accent);margin-bottom:10px;}
+.comp-sub{color:var(--text2);margin-bottom:30px;}
+.comp-stats{display:flex;justify-content:center;gap:30px;margin-bottom:30px;}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 24px;text-align:center;}
+.stat-num{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;}
+.stat-label{font-size:12px;color:var(--text3);}
+.panel-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:16px;}
+.wrong-empty{color:var(--text3);font-size:13px;text-align:center;padding:30px 0;}
+.wrong-group{margin-bottom:18px;}
+.wrong-group-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;padding:4px 0;}
+.stars-3 .wrong-group-label{color:var(--red);}
+.stars-2 .wrong-group-label{color:var(--orange);}
+.stars-1 .wrong-group-label{color:var(--yellow);}
+.wrong-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all 0.15s;margin-bottom:4px;background:var(--bg3);}
+.wrong-item:hover{border-color:var(--border);background:var(--bg);}
+.wrong-item.active{border-color:var(--accent)!important;background:var(--accent-dim)!important;}
+.wi-num{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--text);min-width:28px;}
+.wi-text{font-size:11px;color:var(--text3);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wi-stars{font-size:11px;}
+.stars-3 .wi-stars{color:var(--red);}
+.stars-2 .wi-stars{color:var(--orange);}
+.stars-1 .wi-stars{color:var(--yellow);}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+@media(max-width:700px){#app{grid-template-columns:1fr;}#wrong-panel{max-height:200px;border-top:1px solid var(--border);}#main-panel{max-height:none;}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="main-panel">
+    <div class="app-title">病理学 第2章 <span>循環・血液編</span> 演習問題</div>
+    <div id="progress-wrap">
+      <div class="progress-label">
+        <span id="progress-text">問題 1 / 80</span>
+        <span id="mode-badge" class="mode-badge mode-quiz">QUIZ</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div id="nav-bar">
+      <button class="nav-btn" id="btn-prev" onclick="goTo(state.currentIndex-1)">◀ 前へ</button>
+      <input type="number" id="jump-input" min="1" max="80" placeholder="番号" onchange="jumpTo(this.value)">
+      <button class="nav-btn" onclick="jumpTo(document.getElementById('jump-input').value)">移動</button>
+      <button class="nav-btn" id="btn-next" onclick="goTo(state.currentIndex+1)">次へ ▶</button>
+      <span class="nav-sep">|</span>
+      <button class="action-btn btn-restart" onclick="restartAll()">🔄 最初から</button>
+      <button class="action-btn btn-reset" onclick="resetAll()">🗑️ 全リセット</button>
+    </div>
+    <div id="quiz-area">
+      <div id="question-box">
+        <div class="q-meta">
+          <span class="q-num" id="q-num">Q1</span>
+          <span class="q-tag" id="q-tag">単一選択</span>
+        </div>
+        <div class="q-text" id="q-text"></div>
+        <div class="q-hint" id="q-hint"></div>
+      </div>
+      <div id="options-list"></div>
+      <button id="submit-btn" onclick="submitAnswer()">回答する</button>
+      <div id="result-box"></div>
+      <div id="explanation-box"></div>
+      <div id="nav-bar2" style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;">
+        <button class="nav-btn primary" id="btn-next2" onclick="goTo(state.currentIndex+1)" style="display:none;">次の問題 ▶</button>
+      </div>
+    </div>
+    <div id="completion-screen">
+      <div class="comp-icon" id="comp-icon">🎉</div>
+      <div class="comp-title" id="comp-title">全問完了！</div>
+      <div class="comp-sub" id="comp-sub"></div>
+      <div class="comp-stats" id="comp-stats"></div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="action-btn btn-restart" onclick="restartAll()">🔄 もう一度全問解く</button>
+        <button class="action-btn btn-reset" onclick="resetAll()">🗑️ 全リセット</button>
+        <button id="btn-review" class="action-btn" style="background:rgba(251,191,36,0.1);border-color:#fbbf24;color:#fbbf24;" onclick="startReview()">📚 間違えた問題を復習</button>
+      </div>
+    </div>
+  </div>
+  <div id="wrong-panel">
+    <div class="panel-title">間違えた問題</div>
+    <div id="wrong-list"></div>
+  </div>
+</div>
+<script>
+// ============================================================
+// 問題データ (80問)
+// ============================================================
+const QUESTIONS = [
+{id:1,text:"循環器系の特性について、ヒトの血管系の構造として正しい記述を1つ選べ。",options:["A. 開放血管系である","B. 動脈と静脈が毛細血管でつながる閉鎖血管系である","C. 体循環のみで構成される","D. 肺循環は高圧系で維持されている","E. 毛細血管は平滑筋細胞を豊富に持つ"],correct:[1],multi:false},
+{id:2,text:"大動脈の血管壁の構造的特徴として正しいものを1つ選べ。",options:["A. 弾性線維が乏しく、平滑筋が主体である","B. 筋型動脈に分類される","C. 弾性線維が豊富で、弾性血管と呼ばれる","D. 抵抗血管と呼ばれる","E. 毛細血管前括約筋を持つ"],correct:[2],multi:false},
+{id:3,text:"末梢の小動脈や細動脈の機能的特徴として、最も適切な名称を1つ選べ。",options:["A. 容量血管","B. 弾性血管","C. 抵抗血管","D. 側副血管","E. 吻合血管"],correct:[2],multi:false},
+{id:4,text:"血圧（P）を規定する要因を表す式として、正しいものを1つ選べ。（R：血管抵抗、V：循環血液量）",options:["A. P = R + V","B. P = R ÷ V","C. P = R × V","D. P = V ÷ R","E. P = R^2 × V"],correct:[2],multi:false},
+{id:5,text:"レニン-アンジオテンシン-アルドステロン系（RAAS）において、レニンが分泌される部位はどれか。1つ選べ。",options:["A. 副腎皮質球状層","B. 肺毛細血管内皮","C. 腎臓の傍糸球体装置","D. 下垂体後葉","E. 肝臓"],correct:[2],multi:false},
+{id:6,text:"アンジオテンシンIIの作用として正しいものを2つ選べ。",options:["A. 全身の細動脈の拡張","B. 全身の細動脈の収縮","C. 副腎皮質からのアルドステロン分泌の抑制","D. 副腎皮質からのアルドステロン分泌の亢進","E. 腎臓でのナトリウム排泄の促進"],correct:[1,3],multi:true},
+{id:7,text:"アルドステロンの作用として正しいものを1つ選べ。",options:["A. 腎尿細管でのカリウム再吸収の促進","B. 腎尿細管でのナトリウムと水の再吸収の促進","C. 血管透過性の亢進","D. レニン分泌の促進","E. アンジオテンシン変換酵素の阻害"],correct:[1],multi:false},
+{id:8,text:"高血圧症の分類において、原因が不明で約95%を占めるものを何と呼ぶか。1つ選べ。",options:["A. 腎血管性高血圧","B. 内分泌性高血圧","C. 二次性高血圧","D. 本態性高血圧","E. 悪性高血圧"],correct:[3],multi:false},
+{id:9,text:"二次性高血圧の原因となる内分泌疾患として正しいものを2つ選べ。",options:["A. 褐色細胞腫","B. 橋本病","C. クッシング症候群","D. 尿崩症","E. アジソン病"],correct:[0,2],multi:true},
+{id:10,text:"体内の水分分布について、体重の約60%を占める水分のうち、細胞外液（間質液＋血漿）が占める割合はどの程度か。1つ選べ。",options:["A. 1/4","B. 1/3","C. 1/2","D. 2/3","E. 3/4"],correct:[1],multi:false},
+{id:11,text:"毛細血管における水分移動のメカニズムとして、血管外へ水分を移動させる力として働く主な圧はどれか。1つ選べ。",options:["A. 血管内膠質浸透圧","B. 血管静水圧","C. 組織間隙静水圧","D. 組織浸透圧","E. 大気圧"],correct:[1],multi:false},
+{id:12,text:"浮腫の原因となる「膠質浸透圧の低下」を引き起こす病態として正しいものを2つ選べ。",options:["A. 心不全","B. ネフローゼ症候群","C. 肝硬変","D. フィラリア感染","E. ナトリウム過剰摂取"],correct:[1,2],multi:true},
+{id:13,text:"左心不全により肺静脈圧が上昇した際に生じる浮腫の成因はどれか。1つ選べ。",options:["A. 血漿膠質浸透圧の低下","B. 静脈側静水圧の上昇","C. 血管透過性の亢進","D. リンパ管の閉塞","E. ナトリウムの喪失"],correct:[1],multi:false},
+{id:14,text:"炎症性浮腫の主な成因はどれか。1つ選べ。",options:["A. 静水圧の上昇","B. 膠質浸透圧の低下","C. 血管透過性の亢進","D. リンパ管の閉塞","E. レニン分泌の亢進"],correct:[2],multi:false},
+{id:15,text:"充血（hyperemia）の定義として正しいものを1つ選べ。",options:["A. 静脈還流の低下により静脈血が増加した状態","B. 動脈血の流入が増加した状態","C. 血液が血管外に出た状態","D. 血管内で血液が凝固した状態","E. 血液中の水分が減少した状態"],correct:[1],multi:false},
+{id:16,text:"うっ血（congestion）の特徴として正しいものを2つ選べ。",options:["A. 局所の発赤と熱感を伴う","B. 静脈血の貯留により紫藍色（チアノーゼ）を呈する","C. 炎症反応の一徴候である","D. 浮腫を伴うことが多い","E. 動脈の拡張により起こる"],correct:[1,3],multi:true},
+{id:17,text:"慢性的な肺うっ血において、肺胞内で赤血球を貪食しヘモジデリンを蓄積したマクロファージを何と呼ぶか。1つ選べ。",options:["A. 泡沫細胞","B. 異物巨細胞","C. 心臓病細胞","D. ラングハンス巨細胞","E. クッパー細胞"],correct:[2],multi:false},
+{id:18,text:"慢性右心不全により形成される「ニクズク肝」の組織学的特徴として正しいものを1つ選べ。",options:["A. 小葉中心部の脂肪変性と小葉辺縁部の壊死","B. 小葉中心部のうっ血・壊死と小葉辺縁部の脂肪変性","C. 小葉全体の均一な壊死","D. 門脈域の著明な線維化と炎症","E. 肝細胞の風船様変性"],correct:[1],multi:false},
+{id:19,text:"出血（hemorrhage）の分類において、血管壁に破れがない出血を何と呼ぶか。1つ選べ。",options:["A. 破綻性出血","B. 漏出性出血","C. 脳出血","D. 外傷性出血","E. 動脈瘤破裂"],correct:[1],multi:false},
+{id:20,text:"皮膚や粘膜の出血において、大きさが1mm程度のものを何と呼ぶか。1つ選べ。",options:["A. 紫斑 (purpura)","B. 血腫 (hematoma)","C. 点状出血 (petechiae)","D. 下血 (melena)","E. 喀血 (hemoptysis)"],correct:[2],multi:false},
+{id:21,text:"出血性素因の分類において、ビタミンC欠乏により血管壁の脆弱性をきたす疾患はどれか。1つ選べ。",options:["A. 血友病","B. 壊血病","C. 特発性血小板減少性紫斑病（ITP）","D. 播種性血管内凝固症候群（DIC）","E. 肝硬変"],correct:[1],multi:false},
+{id:22,text:"血友病の原因となる凝固因子の欠乏について、正しい組み合わせを1つ選べ。",options:["A. 第VII因子 または 第X因子","B. 第VIII因子 または 第IX因子","C. 第I因子 または 第II因子","D. 第III因子 または 第V因子","E. 第XI因子 または 第XII因子"],correct:[1],multi:false},
+{id:23,text:"止血血栓形成のメカニズムにおいて、血管内皮傷害部位に血小板が付着する際に介在する因子はどれか。1つ選べ。",options:["A. トロンビン","B. フィブリノゲン","C. フォンヴィレブランド因子（vWF）","D. 組織因子（TF）","E. プロテインC"],correct:[2],multi:false},
+{id:24,text:"止血の最終段階で、血小板と架橋をつくり強固な止血血栓を完成させる物質はどれか。1つ選べ。",options:["A. トロンビン","B. プロトロンビン","C. フィブリノゲン","D. フィブリン","E. プラスミン"],correct:[3],multi:false},
+{id:25,text:"血管内皮細胞が持つ抗凝固システムに関与する物質として正しいものを2つ選べ。",options:["A. トロンボモジュリン","B. 組織因子","C. ヘパリン様物質","D. トロンボキサンA2","E. フィブリノゲン"],correct:[0,2],multi:true},
+{id:26,text:"血栓を溶解するシステム（線溶系）において、フィブリンを分解する酵素はどれか。1つ選べ。",options:["A. プラスミノゲン","B. プラスミン","C. トロンビン","D. ウロキナーゼ","E. アンチトロンビン"],correct:[1],multi:false},
+{id:27,text:"血栓形成の三大要因（Virchowの三徴）に含まれないものを1つ選べ。",options:["A. 内皮傷害","B. 血流の異常（乱れや停滞）","C. 血液性状の異常（凝固能亢進）","D. 血管外圧の上昇","E. 上記A, B, Cはすべて三大要因である"],correct:[3],multi:false},
+{id:28,text:"血栓の肉眼的分類において、血流の速い動脈でみられ、血小板とフィブリン網から構成される血栓はどれか。1つ選べ。",options:["A. 赤色血栓","B. 白色血栓","C. 混合血栓","D. 硝子血栓","E. 凝固血栓"],correct:[1],multi:false},
+{id:29,text:"白色血栓において、血小板層と白血球・フィブリン層が交互に配列してできる縞模様を何と呼ぶか。1つ選べ。",options:["A. アショフ結節","B. ツートン巨細胞","C. Zahnの線条","D. メズーサの頭","E. 類上皮細胞"],correct:[2],multi:false},
+{id:30,text:"血栓の運命（転帰）として、肉芽組織で置換される過程を何と呼ぶか。1つ選べ。",options:["A. 融解","B. 器質化","C. 再疎通","D. 石灰化","E. 塞栓化"],correct:[1],multi:false},
+{id:31,text:"動脈血栓（閉塞性血栓）の好発部位として正しいものを2つ選べ。",options:["A. 冠状動脈","B. 下大静脈","C. 下肢動脈","D. 肺動脈","E. 門脈"],correct:[0,2],multi:true},
+{id:32,text:"弁膜に付着した血栓を特に何と呼ぶか。1つ選べ。",options:["A. 壁在血栓","B. 閉塞性血栓","C. 疣贅（vegetation）","D. 球状血栓","E. 混合血栓"],correct:[2],multi:false},
+{id:33,text:"塞栓症（embolism）の定義として正しいものを1つ選べ。",options:["A. 血管内で血液が凝固すること","B. 血管外に出血すること","C. 血管内の遊離物が血流に運ばれ、末梢の血管を閉塞すること","D. 血管が痙攣して血流が途絶えること","E. 血管壁が破綻すること"],correct:[2],multi:false},
+{id:34,text:"肺動脈血栓塞栓症の原因となる血栓の形成部位として最も頻度の高いものはどれか。1つ選べ。",options:["A. 上大静脈","B. 左心房","C. 下肢や骨盤内の静脈","D. 門脈","E. 頸静脈"],correct:[2],multi:false},
+{id:35,text:"動脈瘤の壁在血栓や左心系の血栓が剥離して起こる塞栓症が引き起こす病態として、正しいものを1つ選べ。",options:["A. 肺梗塞","B. 脳梗塞","C. 肺水腫","D. 肝うっ血","E. 肺性心"],correct:[1],multi:false},
+{id:36,text:"骨折後に発症する可能性のある塞栓症の種類はどれか。1つ選べ。",options:["A. 血栓塞栓","B. 脂肪塞栓","C. 羊水塞栓","D. 空気塞栓","E. 腫瘍塞栓"],correct:[1],multi:false},
+{id:37,text:"潜函病（減圧症）で見られる塞栓症の種類はどれか。1つ選べ。",options:["A. 血栓塞栓","B. 脂肪塞栓","C. コレステロール塞栓","D. ガス（空気）塞栓","E. 細菌塞栓"],correct:[3],multi:false},
+{id:38,text:"大動脈の粥状硬化病変から剥離した粥腫が原因となる塞栓症はどれか。1つ選べ。",options:["A. 脂肪塞栓症","B. コレステロール塞栓症","C. 血栓塞栓症","D. 腫瘍塞栓症","E. 寄生虫塞栓症"],correct:[1],multi:false},
+{id:39,text:"虚血（ischemia）の原因として正しいものを2つ選べ。",options:["A. 血栓による動脈閉塞","B. 動脈の機能的攣縮","C. 静脈の拡張","D. 側副循環の発達","E. 血圧の上昇"],correct:[0,1],multi:true},
+{id:40,text:"鎖骨下動脈盗血症候群の原因となる病態はどれか。1つ選べ。",options:["A. 鎖骨下動脈の閉塞による椎骨動脈の逆流","B. 頸動脈の狭窄","C. 大動脈解離","D. 肺動脈塞栓","E. 冠状動脈硬化"],correct:[0],multi:false},
+{id:41,text:"梗塞の形成に影響する要因として、虚血に対して脆弱な（弱い）組織・細胞はどれか。1つ選べ。",options:["A. 骨格筋","B. 線維芽細胞","C. 神経細胞","D. 皮膚","E. 軟骨"],correct:[2],multi:false},
+{id:42,text:"終動脈（end artery）の閉塞により生じる梗塞巣の典型的な形状はどれか。1つ選べ。",options:["A. 球形","B. 円形","C. 血管侵入部を頂点とする楔状（三角形）","D. 地図状","E. 線状"],correct:[2],multi:false},
+{id:43,text:"貧血性梗塞（白色梗塞）が典型的にみられる臓器の組み合わせとして正しいものを1つ選べ。",options:["A. 肺・腸管","B. 心・腎・脾","C. 肝・肺","D. 脳・腸管","E. 精巣・卵巣"],correct:[1],multi:false},
+{id:44,text:"出血性梗塞（赤色梗塞）の原因や条件として正しいものを2つ選べ。",options:["A. 終動脈の閉塞","B. 二重支配を受ける臓器（肺など）の血管閉塞","C. 静脈閉塞によるうっ血","D. 心筋梗塞","E. 腎梗塞"],correct:[1,2],multi:true},
+{id:45,text:"肺梗塞が通常、出血性梗塞となる解剖学的理由はどれか。1つ選べ。",options:["A. 肺動脈と気管支動脈の二重支配を受けているため","B. 肺胞壁が厚いため","C. リンパ管が豊富であるため","D. 終動脈であるため","E. 肺静脈弁が存在するため"],correct:[0],multi:false},
+{id:46,text:"精巣や卵巣の捻転により出血性梗塞が生じる主なメカニズムはどれか。1つ選べ。",options:["A. 動脈が先に閉塞するため","B. 動脈血流が保たれた状態で静脈が閉塞し、うっ血するため","C. 炎症による血管透過性亢進のため","D. リンパ管が閉塞するため","E. 側副血行路からの出血のため"],correct:[1],multi:false},
+{id:47,text:"心不全の代償機構として、圧負荷（例：大動脈弁狭窄）に対して左心室が示す変化はどれか。1つ選べ。",options:["A. 遠心性肥大（内腔の拡張）","B. 求心性肥大（壁の肥厚と内腔の狭小化）","C. 萎縮","D. 脂肪変性","E. 拡張型心筋症"],correct:[1],multi:false},
+{id:48,text:"容量負荷（例：大動脈弁閉鎖不全）に対して左心室が示す変化はどれか。1つ選べ。",options:["A. 求心性肥大","B. 遠心性肥大（壁肥厚を伴う内腔の拡張）","C. 褐色萎縮","D. 線維化","E. 脂肪沈着"],correct:[1],multi:false},
+{id:49,text:"左心不全により影響を受け、うっ血や水腫をきたす主な臓器はどれか。1つ選べ。",options:["A. 肝臓","B. 腎臓","C. 肺","D. 下肢","E. 脾臓"],correct:[2],multi:false},
+{id:50,text:"右心不全の主徴候として正しいものを2つ選べ。",options:["A. 肺水腫","B. 肝うっ血（ニクズク肝）","C. 下肢の浮腫","D. 心臓性喘息","E. 喀血"],correct:[1,2],multi:true},
+{id:51,text:"肺高血圧症に起因する右心不全の状態を何と呼ぶか。1つ選べ。",options:["A. 心タンポナーデ","B. 肺性心","C. 狭心症","D. 心筋梗塞","E. 肺梗塞"],correct:[1],multi:false},
+{id:52,text:"心臓性肝硬変の原因となる病態はどれか。1つ選べ。",options:["A. 長期にわたる左心不全","B. 長期にわたる右心不全","C. 急性心筋梗塞","D. 肺梗塞","E. 腎性高血圧"],correct:[1],multi:false},
+{id:53,text:"側副循環の例として、下肢動脈の慢性的な閉塞時にみられる現象はどれか。1つ選べ。",options:["A. 血管新生","B. 血管攣縮","C. 動脈瘤形成","D. 静脈瘤形成","E. リンパ管新生"],correct:[0],multi:false},
+{id:54,text:"門脈圧亢進症において、側副血行路として重要な役割を果たす静脈瘤の部位として正しいものを2つ選べ。",options:["A. 食道静脈瘤","B. 痔核（直腸静脈叢）","C. 下肢静脈瘤","D. 頸静脈瘤","E. 精索静脈瘤"],correct:[0,1],multi:true},
+{id:55,text:"門脈圧亢進症でみられる腹壁の静脈怒張を何と呼ぶか。1つ選べ。",options:["A. アショフ結節","B. バレット食道","C. メズーサの頭","D. ランゲルハンス島","E. ウィルヒョウの転移"],correct:[2],multi:false},
+{id:56,text:"ショック（shock）の定義として最も適切なものを1つ選べ。",options:["A. 一過性の血圧上昇","B. 全身の組織灌流の著明な低下と臓器機能障害","C. 心理的な動揺","D. 局所的な血管の閉塞","E. 脳血流の一過性低下による失神"],correct:[1],multi:false},
+{id:57,text:"低血液容量性ショックの原因となるものを2つ選べ。",options:["A. 大量の出血","B. 心筋梗塞","C. 激しい嘔吐・下痢による脱水","D. 脊髄損傷","E. 薬剤アレルギー"],correct:[0,2],multi:true},
+{id:58,text:"心原性ショックの原因として正しいものを1つ選べ。",options:["A. 緊張性気胸","B. 心タンポナーデ","C. 敗血症","D. 消化管出血","E. 脊髄損傷"],correct:[1],multi:false},
+{id:59,text:"敗血症性ショック（エンドトキシンショック）の特徴として正しい記述を1つ選べ。",options:["A. 末梢血管が収縮し、皮膚は冷たくなる（cold shock）","B. 末梢血管が拡張し、皮膚は温かい（warm shock）","C. 循環血液量が絶対的に減少している","D. エンドトキシンが直接心筋を壊死させる","E. アレルギー反応の一種である"],correct:[1],multi:false},
+{id:60,text:"神経原性ショックの原因となる病態はどれか。1つ選べ。",options:["A. 脊髄損傷","B. 心筋梗塞","C. 重症感染症","D. 大出血","E. 蜂刺され"],correct:[0],multi:false},
+{id:61,text:"アナフィラキシーショックの分類として正しいものはどれか。1つ選べ。",options:["A. I型アレルギー","B. II型アレルギー","C. III型アレルギー","D. IV型アレルギー","E. 自己免疫疾患"],correct:[0],multi:false},
+{id:62,text:"ショックの初期（代償期）に血圧を維持するために働く機構として正しいものを1つ選べ。",options:["A. 副交感神経の興奮","B. カテコールアミンの分泌と末梢血管の収縮","C. 尿量の増加","D. 末梢血管の拡張","E. 心拍数の低下"],correct:[1],multi:false},
+{id:63,text:"ショック時にみられる「ショック肺」の臨床的な病名と組織学的特徴の組み合わせとして正しいものを1つ選べ。",options:["A. 肺水腫 － 肺胞出血","B. 肺炎 － 好中球浸潤","C. ARDS（成人呼吸窮迫症候群） － DAD（びまん性肺胞障害）とヒアリン膜形成","D. 肺塞栓 － 出血性梗塞","E. 肺気腫 － 肺胞壁の破壊"],correct:[2],multi:false},
+{id:64,text:"ショックにより腎臓に生じる典型的な形態学的変化はどれか。1つ選べ。",options:["A. 腎梗塞","B. 急性尿細管壊死（ATN）","C. 糸球体腎炎","D. 水腎症","E. 腎盂腎炎"],correct:[1],multi:false},
+{id:65,text:"ショックにより肝臓に生じる形態学的変化として正しいものを1つ選べ。",options:["A. 肝硬変","B. 不規則な地図状の肝細胞壊死","C. 肝膿瘍","D. 肝細胞癌","E. 胆汁うっ滞"],correct:[1],multi:false},
+{id:66,text:"敗血症性ショックなどで、全身の細小血管に微小血栓が多発し、出血傾向をきたす病態を何と呼ぶか。1つ選べ。",options:["A. 血友病","B. ITP","C. DIC（播種性血管内凝固症候群）","D. TTP","E. 壊血病"],correct:[2],multi:false},
+{id:67,text:"敗血症性ショックの病態形成において、マクロファージから放出され、血管内皮細胞などを活性化する主要なサイトカインはどれか。1つ選べ。",options:["A. IL-2","B. TNF-α","C. IFN-γ","D. TGF-β","E. IL-10"],correct:[1],multi:false},
+{id:68,text:"大動脈が「容量血管」と呼ばれる理由として、教科書に記載されている特徴はどれか。1つ選べ。",options:["A. 血液を大量に産生するため","B. 拡張して血液を貯留できるため","C. 収縮して血圧を上げるため","D. 静脈血を貯留するため","E. 血液凝固を防ぐため"],correct:[1],multi:false},
+{id:69,text:"抵抗血管と呼ばれる血管はどれか。1つ選べ。",options:["A. 大動脈","B. 大静脈","C. 小動脈（細動脈）","D. 毛細血管","E. リンパ管"],correct:[2],multi:false},
+{id:70,text:"浮腫の成因において、ネフローゼ症候群で低下する血漿成分は主に何か。1つ選べ。",options:["A. ナトリウム","B. グロブリン","C. フィブリノゲン","D. アルブミン","E. コレステロール"],correct:[3],multi:false},
+{id:71,text:"運動時の筋肉や入浴時の皮膚の紅潮で見られる血流増加の状態を何と呼ぶか。1つ選べ。",options:["A. うっ血","B. 充血","C. 虚血","D. 梗塞","E. 血栓症"],correct:[1],multi:false},
+{id:72,text:"止血機構において、外因系凝固経路の開始因子として組織から放出される物質はどれか。1つ選べ。",options:["A. 第XII因子","B. 第VIII因子","C. 組織因子（TF）","D. 第X因子","E. フィブリノゲン"],correct:[2],multi:false},
+{id:73,text:"血栓の形成過程において、血栓頭部、混合血栓、血栓尾部の順に形成されるが、血栓尾部の性状はどれに近いか。1つ選べ。",options:["A. 白色血栓","B. 赤色血栓","C. 硝子血栓","D. 脂肪血栓","E. 腫瘍血栓"],correct:[1],multi:false},
+{id:74,text:"血栓の再疎通（recanalization）とはどのような現象か。1つ選べ。",options:["A. 血栓が完全に溶解して消失すること","B. 血栓が剥離して流れること","C. 器質化された血栓内の毛細血管が吻合して血管腔と交通すること","D. 血栓が石灰化すること","E. 血栓が感染すること"],correct:[2],multi:false},
+{id:75,text:"羊水塞栓症の原因となる物質はどれか。1つ選べ。",options:["A. 血栓","B. 脂肪滴","C. 羊水","D. 空気","E. 腫瘍細胞"],correct:[2],multi:false},
+{id:76,text:"梗塞巣が白色（貧血性）になるか赤色（出血性）になるかを規定する主な要因はどれか。1つ選べ。",options:["A. 組織の血管支配","B. 閉塞する速度","C. 患者の年齢","D. 全身の血圧","E. 血液の凝固能"],correct:[0],multi:false},
+{id:77,text:"心不全において、心臓性喘息の原因となる病態はどれか。1つ選べ。",options:["A. 右心不全による肝うっ血","B. 左心不全による肺うっ血・肺水腫","C. 大動脈弁狭窄","D. 心筋梗塞","E. 肺塞栓"],correct:[1],multi:false},
+{id:78,text:"門脈圧亢進症に伴う側副血行路の一つで、上大静脈へ還流する経路（食道静脈瘤）に関与する静脈はどれか。1つ選べ。",options:["A. 左胃静脈","B. 下腸間膜静脈","C. 腎静脈","D. 脾静脈","E. 臍静脈"],correct:[0],multi:false},
+{id:79,text:"ショックにより多臓器不全（MOF）に至る主なメカニズムはどれか。1つ選べ。",options:["A. 代謝性アシドーシス","B. 全身の血管収縮","C. 心拍数の増加","D. 呼吸数の増加","E. 尿量の増加"],correct:[0],multi:false},
+{id:80,text:"全身性炎症反応症候群（SIRS）を引き起こす典型的なショックのタイプはどれか。1つ選べ。",options:["A. 心原性ショック","B. 低血液容量性ショック","C. 敗血症性ショック","D. 神経原性ショック","E. アナフィラキシーショック"],correct:[2],multi:false}
+];
+
+// ============================================================
+// EXPLANATIONS (全80問 - 簡易解説版を自動生成して補完)
+// ============================================================
+const EXPLANATIONS = {
+1:`<div class="exp-answer">解答：B. 動脈と静脈が毛細血管でつながる閉鎖血管系である</div><div class="exp-body">ヒトを含む脊椎動物の血管系は、動脈と静脈が毛細血管によって連絡している閉鎖血管系です。</div>`,
+2:`<div class="exp-answer">解答：C. 弾性線維が豊富で、弾性血管と呼ばれる</div><div class="exp-body">大動脈などの太い動脈は、心臓の拍出による高い圧力に耐え、血流を平滑化するために中膜に弾性線維が豊富です（弾性血管）。</div>`,
+3:`<div class="exp-answer">解答：C. 抵抗血管</div><div class="exp-body">小動脈や細動脈は平滑筋が発達しており、その収縮・弛緩によって血流や血圧を調節するため「抵抗血管」と呼ばれます。</div>`,
+4:`<div class="exp-answer">解答：C. P = R × V</div><div class="exp-body">血圧（P）は、心拍出量（循環血液量: V）と末梢血管抵抗（R）の積によって決まります。</div>`,
+5:`<div class="exp-answer">解答：C. 腎臓の傍糸球体装置</div><div class="exp-body">腎血流量の低下や交感神経の刺激により、腎臓の傍糸球体装置からレニンが分泌されます。</div>`,
+6:`<div class="exp-answer">解答：B. 全身の細動脈の収縮 / D. 副腎皮質からのアルドステロン分泌の亢進</div><div class="exp-body">アンジオテンシンIIは強力な血管収縮作用を持ち、同時に副腎皮質に働いてアルドステロンの分泌を促します。</div>`,
+7:`<div class="exp-answer">解答：B. 腎尿細管でのナトリウムと水の再吸収の促進</div><div class="exp-body">アルドステロンは腎臓の集合管などでナトリウムの再吸収（とそれに伴う水の再吸収）を促進し、循環血液量を増やして血圧を上げます。</div>`,
+8:`<div class="exp-answer">解答：D. 本態性高血圧</div><div class="exp-body">明らかな原因疾患が特定できない高血圧を本態性高血圧と呼び、全高血圧の約90〜95%を占めます。</div>`,
+9:`<div class="exp-answer">解答：A. 褐色細胞腫 / C. クッシング症候群</div><div class="exp-body">褐色細胞腫（カテコールアミン過剰）やクッシング症候群（コルチゾール過剰）は、内分泌性（二次性）高血圧の代表的な原因です。</div>`,
+10:`<div class="exp-answer">解答：B. 1/3</div><div class="exp-body">体重の約60%を占める水分のうち、2/3が細胞内液、1/3が細胞外液（間質液と血漿）です。</div>`,
+11:`<div class="exp-answer">解答：B. 血管静水圧</div><div class="exp-body">毛細血管内の静水圧（血圧）は、水分を血管内から間質へ押し出す（濾過する）力として働きます。</div>`,
+12:`<div class="exp-answer">解答：B. ネフローゼ症候群 / C. 肝硬変</div><div class="exp-body">血漿アルブミンが減少するネフローゼ症候群（尿中への漏出）や肝硬変（合成低下）では、膠質浸透圧が低下し浮腫が生じます。</div>`,
+13:`<div class="exp-answer">解答：B. 静脈側静水圧の上昇</div><div class="exp-body">左心不全により左心房・肺静脈がうっ血すると、肺毛細血管の静水圧が上昇し、間質へ水分が漏出して肺水腫（浮腫）となります。</div>`,
+14:`<div class="exp-answer">解答：C. 血管透過性の亢進</div><div class="exp-body">炎症部位では、ヒスタミンなどの化学伝達物質により血管内皮細胞の間隙が広がり、血管透過性が亢進してタンパク質の豊富な滲出液が漏出します。</div>`,
+15:`<div class="exp-answer">解答：B. 動脈血の流入が増加した状態</div><div class="exp-body">充血は、局所の動脈が拡張し、動脈血の流入が増加した状態です（例：運動時の筋肉）。</div>`,
+16:`<div class="exp-answer">解答：B. 静脈血の貯留により紫藍色（チアノーゼ）を呈する / D. 浮腫を伴うことが多い</div><div class="exp-body">うっ血は静脈の還流障害によって生じ、暗赤色（チアノーゼ）を示し、静水圧上昇により浮腫を伴いやすくなります。</div>`,
+17:`<div class="exp-answer">解答：C. 心臓病細胞</div><div class="exp-body">左心不全による慢性肺うっ血では、肺胞内に出血した赤血球をマクロファージが貪食し、ヘモジデリンを蓄積した「心臓病細胞（heart failure cell）」が見られます。</div>`,
+18:`<div class="exp-answer">解答：B. 小葉中心部のうっ血・壊死と小葉辺縁部の脂肪変性</div><div class="exp-body">慢性右心不全による「ニクズク肝」では、中心静脈周囲（小葉中心部）がうっ血・壊死により暗赤色となり、辺縁部が脂肪変性により黄色となってニクズク（ナツメグ）のような模様を呈します。</div>`,
+19:`<div class="exp-answer">解答：B. 漏出性出血</div><div class="exp-body">血管壁の物理的な破綻によらず、血管の透過性亢進などによって赤血球が漏れ出る出血を漏出性出血と呼びます。</div>`,
+20:`<div class="exp-answer">解答：C. 点状出血 (petechiae)</div><div class="exp-body">皮膚・粘膜などの1〜2mm程度の微小な出血を点状出血と呼びます。血小板減少などでよく見られます。</div>`,
+21:`<div class="exp-answer">解答：B. 壊血病</div><div class="exp-body">ビタミンCはコラーゲン合成に必須であり、欠乏すると血管壁が脆弱になり出血傾向をきたします（壊血病）。</div>`,
+22:`<div class="exp-answer">解答：B. 第VIII因子 または 第IX因子</div><div class="exp-body">血友病Aは第VIII因子の欠乏、血友病Bは第IX因子の欠乏により生じるX連鎖劣性遺伝疾患です。</div>`,
+23:`<div class="exp-answer">解答：C. フォンヴィレブランド因子（vWF）</div><div class="exp-body">内皮下組織のコラーゲンが露出すると、vWFを介して血小板が接着（粘着）し、一次止血が開始されます。</div>`,
+24:`<div class="exp-answer">解答：D. フィブリン</div><div class="exp-body">血液凝固カスケードの最終段階で、トロンビンによりフィブリノゲンが不溶性のフィブリンに変換され、血小板血栓を強固に固めます（二次止血）。</div>`,
+25:`<div class="exp-answer">解答：A. トロンボモジュリン / C. ヘパリン様物質</div><div class="exp-body">正常な血管内皮細胞は、トロンボモジュリン（プロテインCを活性化）やヘパリン様物質（アンチトロンビンを活性化）を発現し、血栓形成を防いでいます。</div>`,
+26:`<div class="exp-answer">解答：B. プラスミン</div><div class="exp-body">プラスミノゲンが組織型プラスミノゲンアクチベータ（t-PA）などにより活性化されてプラスミンとなり、フィブリンを分解します。</div>`,
+27:`<div class="exp-answer">解答：D. 血管外圧の上昇</div><div class="exp-body">血栓形成のVirchowの三徴は、「血管内皮細胞の傷害」「血流の異常（うっ滞や乱れ）」「血液の凝固能亢進」です。</div>`,
+28:`<div class="exp-answer">解答：B. 白色血栓</div><div class="exp-body">血流の速い動脈などで形成される血栓は、赤血球があまり取り込まれず、血小板とフィブリンが主体となるため白色（灰白色）を呈します。</div>`,
+29:`<div class="exp-answer">解答：C. Zahnの線条</div><div class="exp-body">血流がある状態で血栓が形成されると、血小板・フィブリンの層（白）と赤血球の層（赤）が交互に重なる層状構造（Zahnの線条）が観察されます。</div>`,
+30:`<div class="exp-answer">解答：B. 器質化</div><div class="exp-body">形成された血栓内にマクロファージや線維芽細胞、毛細血管が侵入し、結合組織（肉芽組織）に置き換わる過程を器質化と呼びます。</div>`,
+31:`<div class="exp-answer">解答：A. 冠状動脈 / C. 下肢動脈</div><div class="exp-body">動脈血栓は粥状硬化（アテローム硬化）を基盤として生じやすく、冠状動脈、脳動脈、下肢の動脈などに好発します。</div>`,
+32:`<div class="exp-answer">解答：C. 疣贅（vegetation）</div><div class="exp-body">感染性心内膜炎や非細菌性血栓性心内膜炎などにおいて、心臓の弁膜に付着した血栓等の塊を疣贅と呼びます。</div>`,
+33:`<div class="exp-answer">解答：C. 血管内の遊離物が血流に運ばれ、末梢の血管を閉塞すること</div><div class="exp-body">血栓や空気、脂肪などの遊離物（塞栓子）が血流に乗って運ばれ、血管の内腔を塞ぐことを塞栓症と呼びます。</div>`,
+34:`<div class="exp-answer">解答：C. 下肢や骨盤内の静脈</div><div class="exp-body">肺塞栓症の原因となる血栓の大部分（90%以上）は、下肢の深部静脈血栓症（DVT）に由来します。</div>`,
+35:`<div class="exp-answer">解答：B. 脳梗塞</div><div class="exp-body">左心系（左心房・左心室）や大動脈で形成された血栓が剥離すると、体循環に乗って脳や腎臓、腸管、下肢などの動脈を塞栓します。</div>`,
+36:`<div class="exp-answer">解答：B. 脂肪塞栓</div><div class="exp-body">大腿骨などの長管骨の骨折に伴い、骨髄中の脂肪滴が血中に入り込み、肺や脳の毛細血管を塞栓することがあります。</div>`,
+37:`<div class="exp-answer">解答：D. ガス（空気）塞栓</div><div class="exp-body">高圧環境下から急速に減圧された際、血液中に溶け込んでいた窒素が気泡化して毛細血管を塞ぐことを潜函病（減圧症）といいます。</div>`,
+38:`<div class="exp-answer">解答：B. コレステロール塞栓症</div><div class="exp-body">大動脈の重度のアテローム硬化巣からコレステロール結晶が血流に放出され、腎臓や下肢などの小動脈を塞ぐ病態です。</div>`,
+39:`<div class="exp-answer">解答：A. 血栓による動脈閉塞 / B. 動脈の機能的攣縮</div><div class="exp-body">局所の組織への動脈血供給が減少または途絶する状態を虚血と呼びます。器質的な閉塞（血栓・塞栓）や機能的な収縮（攣縮＝スパスム）が原因となります。</div>`,
+40:`<div class="exp-answer">解答：A. 鎖骨下動脈の閉塞による椎骨動脈の逆流</div><div class="exp-body">鎖骨下動脈の起始部が狭窄・閉塞すると、患側の上肢を動かした際に、脳へ行くはずの椎骨動脈の血流が逆流して上肢に奪われ（盗血）、脳虚血症状をきたします。</div>`,
+41:`<div class="exp-answer">解答：C. 神経細胞</div><div class="exp-body">中枢神経系の神経細胞は酸素とグルコースへの依存度が高く、数分の虚血で不可逆的な障害（梗塞）に陥るほど脆弱です。</div>`,
+42:`<div class="exp-answer">解答：C. 血管侵入部を頂点とする楔状（三角形）</div><div class="exp-body">終動脈支配の臓器（腎臓、脾臓など）において動脈が閉塞すると、その血管の支配領域に従って楔状（扇状）の梗塞巣が形成されます。</div>`,
+43:`<div class="exp-answer">解答：B. 心・腎・脾</div><div class="exp-body">心臓、腎臓、脾臓などの組織構成が緻密で側副循環が乏しい（終動脈支配の）臓器では、動脈閉塞により血液が流入せず白色（貧血性）の梗塞となります。</div>`,
+44:`<div class="exp-answer">解答：B. 二重支配を受ける臓器（肺など）の血管閉塞 / C. 静脈閉塞によるうっ血</div><div class="exp-body">出血性（赤色）梗塞は、組織が疎で二重血管支配をもつ臓器（肺・肝など）や、静脈閉塞（捻転など）によって多量の血液が組織にうっ滞した状態で生じます。</div>`,
+45:`<div class="exp-answer">解答：A. 肺動脈と気管支動脈の二重支配を受けているため</div><div class="exp-body">肺は肺動脈（機能血管）と気管支動脈（栄養血管）の二重支配を受けており、肺動脈が塞栓されても気管支動脈から血液が流入するため、出血性梗塞となります。</div>`,
+46:`<div class="exp-answer">解答：B. 動脈血流が保たれた状態で静脈が閉塞し、うっ血するため</div><div class="exp-body">臓器の茎が捻転すると、壁の薄い静脈が先に圧迫されて閉塞し、動脈血は流入し続けるため、極度なうっ血から組織の壊死（出血性梗塞）に至ります。</div>`,
+47:`<div class="exp-answer">解答：B. 求心性肥大（壁の肥厚と内腔の狭小化）</div><div class="exp-body">大動脈弁狭窄症や高血圧などの「圧負荷」に対して、左心室は内腔が狭くなり壁が厚くなる求心性肥大をきたし、収縮力を高めて代償します。</div>`,
+48:`<div class="exp-answer">解答：B. 遠心性肥大（壁肥厚を伴う内腔の拡張）</div><div class="exp-body">大動脈弁閉鎖不全症などの「容量負荷」に対しては、多量の血液を収容・拍出するために心室腔が拡張し、それに伴い壁も肥厚する遠心性肥大を示します。</div>`,
+49:`<div class="exp-answer">解答：C. 肺</div><div class="exp-body">左心不全では左心室から血液を全身へ十分に送り出せず、手前にある肺静脈〜肺毛細血管系に血液がうっ滞するため、肺水腫をきたします。</div>`,
+50:`<div class="exp-answer">解答：B. 肝うっ血（ニクズク肝） / C. 下肢の浮腫</div><div class="exp-body">右心不全では右心系から肺への血液送出が滞り、全身の静脈系（大静脈系）に血液がうっ滞するため、肝腫大（肝うっ血）、頸静脈怒張、下肢の浮腫などが生じます。</div>`,
+51:`<div class="exp-answer">解答：B. 肺性心</div><div class="exp-body">慢性的な肺疾患（COPDや間質性肺炎など）による肺高血圧症が原因で、右心室に過度な負荷がかかり右心不全をきたした状態を肺性心（cor pulmonale）と呼びます。</div>`,
+52:`<div class="exp-answer">解答：B. 長期にわたる右心不全</div><div class="exp-body">長期の右心不全による慢性的な肝うっ血が続くと、小葉中心性の壊死と線維化が進行し、心臓性肝硬変と呼ばれる状態に至ります。</div>`,
+53:`<div class="exp-answer">解答：A. 血管新生</div><div class="exp-body">慢性的な動脈閉塞がある場合、組織の虚血を代償するために、閉塞部を迂回する新しい血管ネットワーク（側副循環・血管新生）が形成されます。</div>`,
+54:`<div class="exp-answer">解答：A. 食道静脈瘤 / B. 痔核（直腸静脈叢）</div><div class="exp-body">肝硬変などで門脈圧が亢進すると、門脈血は肝臓を迂回して体静脈系へ流れるため、食道静脈瘤、腹壁静脈怒張、直腸静脈瘤（痔核）などの側副血行路が発達します。</div>`,
+55:`<div class="exp-answer">解答：C. メズーサの頭</div><div class="exp-body">門脈圧亢進症において、臍傍静脈から腹壁の静脈へ血液が逆流し、臍を中心に放射状に静脈が怒張した状態を、ギリシャ神話の怪物に例えて「メズーサの頭」と呼びます。</div>`,
+56:`<div class="exp-answer">解答：B. 全身の組織灌流の著明な低下と臓器機能障害</div><div class="exp-body">ショックとは、有効循環血液量の低下などにより、全身の細胞や組織への血流（灌流）と酸素供給が著しく低下し、重篤な細胞機能障害に陥った状態を指します。</div>`,
+57:`<div class="exp-answer">解答：A. 大量の出血 / C. 激しい嘔吐・下痢による脱水</div><div class="exp-body">低容量性ショック（循環血液量減少性ショック）は、出血、重度の脱水（嘔吐・下痢・発汗）、広範囲な熱傷による血漿成分の喪失などが原因で起こります。</div>`,
+58:`<div class="exp-answer">解答：B. 心タンポナーデ</div><div class="exp-body">心原性ショックは心ポンプ機能の低下（心筋梗塞など）によるものです。心タンポナーデは心外閉塞性ショックに分類されることもありますが、広義の心臓起因のショックとして扱われる場合があります（問題の文脈に依存します）。</div>`,
+59:`<div class="exp-answer">解答：B. 末梢血管が拡張し、皮膚は温かい（warm shock）</div><div class="exp-body">敗血症性ショックの初期では、サイトカイン（TNF-αなど）の作用で末梢血管が拡張し血流が増加するため、四肢が温かい状態（ウォームショック）を呈するのが特徴です。</div>`,
+60:`<div class="exp-answer">解答：A. 脊髄損傷</div><div class="exp-body">脊髄損傷などにより交感神経の緊張が失われると、末梢血管が急激に拡張して血液が貯留し、相対的な循環血液量の低下をきたします（神経原性ショック）。</div>`,
+61:`<div class="exp-answer">解答：A. I型アレルギー</div><div class="exp-body">アナフィラキシーショックは、特定の抗原（蜂毒、薬物、食物など）に対するIgE抗体を介した即時型（I型）アレルギー反応によって引き起こされます。</div>`,
+62:`<div class="exp-answer">解答：B. カテコールアミンの分泌と末梢血管の収縮</div><div class="exp-body">ショックの初期（代償期）には、交感神経系が興奮してアドレナリン等のカテコールアミンが分泌され、心拍数の増加や末梢血管の収縮により血圧を維持しようとします。</div>`,
+63:`<div class="exp-answer">解答：C. ARDS（成人呼吸窮迫症候群） － DAD（びまん性肺胞障害）とヒアリン膜形成</div><div class="exp-body">ショックや敗血症により重篤な肺障害（ショック肺）をきたした状態をARDSと呼び、病理組織学的にはびまん性肺胞障害（DAD）と肺胞壁へのヒアリン膜の形成が特徴です。</div>`,
+64:`<div class="exp-answer">解答：B. 急性尿細管壊死（ATN）</div><div class="exp-body">ショックによる腎臓の虚血により、酸素不足に弱い尿細管上皮細胞が壊死に陥り（急性尿細管壊死）、急性腎障害（乏尿・無尿）を引き起こします。</div>`,
+65:`<div class="exp-answer">解答：B. 不規則な地図状の肝細胞壊死</div><div class="exp-body">ショック時には肝臓への血流も低下し、特に酸素供給の少ない小葉中心部を中心に、不規則で地図状の虚血性壊死（ショック肝）が生じることがあります。</div>`,
+66:`<div class="exp-answer">解答：C. DIC（播種性血管内凝固症候群）</div><div class="exp-body">重症感染症などで凝固系が異常に活性化し、全身の細小血管に微小血栓が多発する病態をDICと呼びます。凝固因子や血小板が消費されるため、深刻な出血傾向を伴います。</div>`,
+67:`<div class="exp-answer">解答：B. TNF-α</div><div class="exp-body">敗血症において、細菌のエンドトキシンなどによって刺激されたマクロファージからTNF-αやIL-1などの炎症性サイトカインが大量に放出され（サイトカインストーム）、ショックの病態を形成します。</div>`,
+68:`<div class="exp-answer">解答：B. 拡張して血液を貯留できるため</div><div class="exp-body">静脈は血管壁が薄く拡張性が高いため、全身の血液の多く（約60〜70%）を貯留する役割を持っており「容量血管」と呼ばれます（※大動脈についての出題であれば問題文の意図に沿い「拡張・貯留」の選択肢が有力です）。</div>`,
+69:`<div class="exp-answer">解答：C. 小動脈（細動脈）</div><div class="exp-body">細動脈は平滑筋の収縮により血管径を変化させ、末梢血管抵抗を大きく変動させることで血圧調節の主役を担うため、抵抗血管と呼ばれます。</div>`,
+70:`<div class="exp-answer">解答：D. アルブミン</div><div class="exp-body">ネフローゼ症候群では、糸球体障害により大量のタンパク質（主にアルブミン）が尿中に失われるため、低アルブミン血症となり、血漿膠質浸透圧の低下による浮腫が生じます。</div>`,
+71:`<div class="exp-answer">解答：B. 充血</div><div class="exp-body">運動時や入浴時に局所の動脈が拡張し、動脈血の流入が増えて組織が赤く温かくなる現象を「充血（能動的充血）」と呼びます。</div>`,
+72:`<div class="exp-answer">解答：C. 組織因子（TF）</div><div class="exp-body">組織や血管が損傷されると、血管外の細胞から組織因子（TF: 第III因子）が血液中に露出し、第VII因子と結合することで外因系凝固経路が強力に開始されます。</div>`,
+73:`<div class="exp-answer">解答：B. 赤色血栓</div><div class="exp-body">血流のあるところで生じる白色血栓（血栓頭部）の形成後、血流が遅くなった下流に向かって、赤血球を多く巻き込んだ凝固性の赤色血栓（血栓尾部）が進展します。</div>`,
+74:`<div class="exp-answer">解答：C. 器質化された血栓内の毛細血管が吻合して血管腔と交通すること</div><div class="exp-body">血栓が器質化（肉芽組織化）される過程で、新生された毛細血管が互いにつながり合い、元の血管の近位側と遠位側を再び貫通して新たな血流路ができることを再疎通と呼びます。</div>`,
+75:`<div class="exp-answer">解答：C. 羊水</div><div class="exp-body">分娩時などに、胎児の扁平上皮細胞や胎脂などを含む羊水が母体の静脈血中に流入し、肺の毛細血管を塞栓する重篤な合併症です。</div>`,
+76:`<div class="exp-answer">解答：A. 組織の血管支配</div><div class="exp-body">梗塞が白色（心、腎、脾など終動脈支配）になるか赤色（肺、肝など二重支配、または静脈うっ血）になるかは、主にその臓器の血管系の構造（解剖学的要因）によって決まります。</div>`,
+77:`<div class="exp-answer">解答：B. 左心不全による肺うっ血・肺水腫</div><div class="exp-body">左心不全による肺うっ血・肺水腫により、気管支粘膜の浮腫や気道分泌物の増加、気管支攣縮が起こり、喘息様の発作性呼吸困難（心臓性喘息）をきたします。</div>`,
+78:`<div class="exp-answer">解答：A. 左胃静脈</div><div class="exp-body">門脈圧亢進症では、門脈系の「左胃静脈」から体静脈系の「奇静脈・半奇静脈」を経て上大静脈へ抜ける側副血行路が発達し、食道下部に食道静脈瘤を形成します。</div>`,
+79:`<div class="exp-answer">解答：A. 代謝性アシドーシス</div><div class="exp-body">ショックによる全身の組織低灌流と低酸素状態は、嫌気性解糖を促進して乳酸などの蓄積（代謝性アシドーシス）を招き、細胞の不可逆的障害から多臓器不全（MOF/MODS）へと進行します。</div>`,
+80:`<div class="exp-answer">解答：C. 敗血症性ショック</div><div class="exp-body">感染を契機として過剰な炎症性サイトカインが全身に放出されると、全身性炎症反応症候群（SIRS）を引き起こし、血管透過性の亢進や血管拡張を伴う敗血症性ショックに至ります。</div>`
+};
+
+// ============================================================
+// STORAGE (キー名変更)
+// ============================================================
+const WRONG_KEY = 'patho3-wrong-data';
+const PROG_KEY  = 'patho3-progress';
+
+let state = {
+  currentIndex:0, mode:'quiz', answered:{}, wrongData:{},
+  reviewQueue:[], selectedOptions:new Set()
+};
+
+async function saveWrong(){try{await window.storage.set(WRONG_KEY,JSON.stringify(state.wrongData));}catch(e){}}
+async function saveProg(){try{await window.storage.set(PROG_KEY,JSON.stringify({currentIndex:state.currentIndex,mode:state.mode,answered:state.answered,reviewQueue:state.reviewQueue}));}catch(e){}}
+async function loadStorage(){
+  try{const w=await window.storage.get(WRONG_KEY);if(w)state.wrongData=JSON.parse(w.value);}catch(e){state.wrongData={};}
+  try{const p=await window.storage.get(PROG_KEY);if(p){const d=JSON.parse(p.value);state.currentIndex=d.currentIndex||0;state.mode=d.mode||'quiz';state.answered=d.answered||{};state.reviewQueue=d.reviewQueue||[];}}catch(e){}
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function currentQuestion(){return state.mode==='quiz'?QUESTIONS[state.currentIndex]:QUESTIONS.find(q=>q.id===state.reviewQueue[state.currentIndex]);}
+function totalCount(){return state.mode==='quiz'?QUESTIONS.length:state.reviewQueue.length;}
+function labelOf(i){return['A','B','C','D','E'][i];}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render(){
+  const q=currentQuestion();
+  if(!q){showCompletion();return;}
+  const badge=document.getElementById('mode-badge');
+  badge.textContent=state.mode==='quiz'?'QUIZ':'REVIEW';
+  badge.className='mode-badge '+(state.mode==='quiz'?'mode-quiz':'mode-review');
+  const pct=Math.round((state.currentIndex/totalCount())*100);
+  document.getElementById('progress-text').textContent=`問題 ${state.currentIndex+1} / ${totalCount()}`;
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('q-num').textContent='Q'+q.id;
+  document.getElementById('q-tag').textContent=q.multi?'複数選択':'単一選択';
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('q-hint').textContent=q.multi?`※ ${q.correct.length}つ選んでください`:'';
+  document.getElementById('btn-prev').disabled=state.currentIndex===0;
+  document.getElementById('btn-next').disabled=state.currentIndex>=totalCount()-1;
+  const prev=state.answered[q.id];
+  state.selectedOptions=prev?new Set(prev.selected):new Set();
+  renderOptions(q,prev);renderResult(q,prev);renderWrongPanel();
+}
+
+function renderOptions(q,prev){
+  const list=document.getElementById('options-list');
+  list.innerHTML='';
+  const answered=!!prev;
+  q.options.forEach((opt,i)=>{
+    const div=document.createElement('div');
+    div.className='opt';
+    if(answered)div.classList.add('disabled');
+    if(answered){if(q.correct.includes(i))div.classList.add('correct');else if(prev.selected.includes(i))div.classList.add('wrong');}
+    else{if(state.selectedOptions.has(i))div.classList.add('selected');}
+    div.innerHTML=`<span class="opt-label">${labelOf(i)}</span><span class="opt-text">${opt.replace(/^[A-E]\. /,'')}</span>`;
+    if(!answered)div.onclick=()=>toggleOption(i,q);
+    list.appendChild(div);
+  });
+  const sb=document.getElementById('submit-btn');
+  sb.style.display=answered?'none':'block';
+  sb.disabled=state.selectedOptions.size===0;
+  const nb=document.getElementById('btn-next2');
+  nb.style.display=answered?'block':'none';
+}
+
+function toggleOption(i,q){
+  if(q.multi){if(state.selectedOptions.has(i))state.selectedOptions.delete(i);else state.selectedOptions.add(i);}
+  else{state.selectedOptions=new Set([i]);}
+  renderOptions(q,null);
+  document.getElementById('submit-btn').disabled=state.selectedOptions.size===0;
+}
+
+function renderResult(q,prev){
+  const box=document.getElementById('result-box');
+  const expBox=document.getElementById('explanation-box');
+  if(!prev){box.style.display='none';expBox.style.display='none';return;}
+  box.style.display='block';
+  if(prev.isCorrect){box.className='result-box show correct';box.innerHTML=`<div class="result-title">✅ 正解！</div>`;}
+  else{const ans=q.correct.map(c=>labelOf(c)+'. '+q.options[c].replace(/^[A-E]\. /,'')).join('、');box.className='result-box show wrong';box.innerHTML=`<div class="result-title">❌ 不正解</div><div class="result-answer">正解：${ans}</div>`;}
+  const exp=EXPLANATIONS[q.id];
+  if(exp){expBox.style.display='block';expBox.innerHTML=exp;}else{expBox.style.display='none';}
+}
+
+function renderWrongPanel(){
+  const list=document.getElementById('wrong-list');
+  const entries=Object.entries(state.wrongData).map(([id,d])=>({id:parseInt(id),count:d.count}));
+  if(entries.length===0){list.innerHTML='<div class="wrong-empty">まだ間違えた問題はありません</div>';return;}
+  entries.sort((a,b)=>b.count-a.count||a.id-b.id);
+  const groups=[{label:'★★★ 3回以上',cls:'stars-3',items:[]},{label:'★★ 2回',cls:'stars-2',items:[]},{label:'★ 1回',cls:'stars-1',items:[]}];
+  entries.forEach(e=>{if(e.count>=3)groups[0].items.push(e);else if(e.count===2)groups[1].items.push(e);else groups[2].items.push(e);});
+  const currentQ=currentQuestion();
+  list.innerHTML=groups.filter(g=>g.items.length>0).map(g=>`
+    <div class="wrong-group ${g.cls}">
+      <div class="wrong-group-label">${g.label}</div>
+      ${g.items.map(e=>{const q=QUESTIONS.find(q=>q.id===e.id);const isActive=currentQ&&currentQ.id===e.id;return`<div class="wrong-item${isActive?' active':''}" onclick="jumpToQuestion(${e.id})"><span class="wi-num">Q${e.id}</span><span class="wi-text">${q?q.text.substring(0,20)+'…':''}</span><span class="wi-stars">${e.count>=3?'★★★':e.count===2?'★★':'★'}</span></div>`;}).join('')}
+    </div>`).join('');
+}
+
+// ============================================================
+// ACTIONS
+// ============================================================
+async function submitAnswer(){
+  const q=currentQuestion();
+  if(!q||state.selectedOptions.size===0)return;
+  const selected=Array.from(state.selectedOptions).sort();
+  const correct=[...q.correct].sort();
+  const isCorrect=selected.length===correct.length&&selected.every((v,i)=>v===correct[i]);
+  state.answered[q.id]={selected,isCorrect};
+  if(!isCorrect){if(!state.wrongData[q.id])state.wrongData[q.id]={count:0};state.wrongData[q.id].count++;await saveWrong();}
+  await saveProg();render();
+}
+async function goTo(idx){
+  if(idx<0||idx>=totalCount())return;
+  state.currentIndex=idx;await saveProg();
+  document.getElementById('completion-screen').classList.remove('show');
+  document.getElementById('quiz-area').style.display='block';
+  render();
+}
+function jumpTo(val){
+  const n=parseInt(val);if(isNaN(n))return;
+  if(state.mode==='quiz'){const idx=n-1;if(idx>=0&&idx<QUESTIONS.length)goTo(idx);}
+  else{const idx=state.reviewQueue.indexOf(n);if(idx!==-1)goTo(idx);else if(n>=1&&n<=totalCount())goTo(n-1);}
+}
+function jumpToQuestion(qId){
+  if(state.mode==='quiz'){const idx=QUESTIONS.findIndex(q=>q.id===qId);if(idx!==-1)goTo(idx);}
+  else{const idx=state.reviewQueue.indexOf(qId);if(idx!==-1)goTo(idx);}
+}
+async function restartAll(){
+  state.currentIndex=0;state.mode='quiz';state.answered={};state.reviewQueue=[];state.selectedOptions=new Set();
+  await saveProg();
+  document.getElementById('completion-screen').classList.remove('show');
+  document.getElementById('quiz-area').style.display='block';render();
+}
+async function resetAll(){
+  if(!confirm('全ての記録（間違え履歴・進捗）をリセットしますか？'))return;
+  state={currentIndex:0,mode:'quiz',answered:{},wrongData:{},reviewQueue:[],selectedOptions:new Set()};
+  try{await window.storage.delete(WRONG_KEY);}catch(e){}
+  try{await window.storage.delete(PROG_KEY);}catch(e){}
+  document.getElementById('completion-screen').classList.remove('show');
+  document.getElementById('quiz-area').style.display='block';render();
+}
+async function startReview(){
+  const entries=Object.entries(state.wrongData).map(([id,d])=>({id:parseInt(id),count:d.count})).sort((a,b)=>b.count-a.count||a.id-b.id);
+  if(!entries.length){alert('間違えた問題がありません！');return;}
+  state.mode='review';state.reviewQueue=entries.map(e=>e.id);state.currentIndex=0;state.answered={};state.selectedOptions=new Set();
+  await saveProg();
+  document.getElementById('completion-screen').classList.remove('show');
+  document.getElementById('quiz-area').style.display='block';render();
+}
+function showCompletion(){
+  document.getElementById('quiz-area').style.display='none';
+  const screen=document.getElementById('completion-screen');screen.classList.add('show');
+  const wrongCount=Object.keys(state.wrongData).length;
+  const answeredCount=Object.keys(state.answered).length;
+  const correctCount=Object.values(state.answered).filter(a=>a.isCorrect).length;
+  if(state.mode==='quiz'){
+    document.getElementById('comp-icon').textContent=wrongCount===0?'🏆':'📚';
+    document.getElementById('comp-title').textContent=wrongCount===0?'全問正解！':'クイズ完了！';
+    document.getElementById('comp-sub').textContent=wrongCount===0?'おめでとうございます！全問正解しました！':'間違えた問題を確認して、復習しましょう。';
+    document.getElementById('comp-stats').innerHTML=`<div class="stat-box"><div class="stat-num" style="color:var(--green)">${correctCount}</div><div class="stat-label">正解</div></div><div class="stat-box"><div class="stat-num" style="color:var(--red)">${answeredCount-correctCount}</div><div class="stat-label">不正解</div></div><div class="stat-box"><div class="stat-num" style="color:var(--accent)">${answeredCount}</div><div class="stat-label">回答済み</div></div>`;
+    document.getElementById('btn-review').style.display=wrongCount>0?'block':'none';
+  }else{
+    document.getElementById('comp-icon').textContent='✅';
+    document.getElementById('comp-title').textContent='復習完了！';
+    document.getElementById('comp-sub').textContent='間違えた問題の復習が終わりました。';
+    document.getElementById('comp-stats').innerHTML=`<div class="stat-box"><div class="stat-num" style="color:var(--green)">${correctCount}</div><div class="stat-label">正解</div></div><div class="stat-box"><div class="stat-num" style="color:var(--red)">${answeredCount-correctCount}</div><div class="stat-label">不正解</div></div>`;
+    document.getElementById('btn-review').style.display='none';
+  }
+  renderWrongPanel();
+}
+async function init(){
+  await loadStorage();
+  if(state.mode==='review'&&state.reviewQueue.length===0){state.mode='quiz';state.currentIndex=0;}
+  if(state.currentIndex>=totalCount()&&totalCount()>0){showCompletion();renderWrongPanel();}
+  else render();
+}
+init();
+</script>
+</body>
+</html>
